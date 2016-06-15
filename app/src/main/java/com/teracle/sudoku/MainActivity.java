@@ -1,16 +1,15 @@
 package com.teracle.sudoku;
 
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.widget.GridLayout;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
-import java.util.zip.Inflater;
 
 public class MainActivity extends AppCompatActivity {
+
+    static public String[][][][] str;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,8 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
         ArrayList<TextBlock> textBlockArrayList = new ArrayList<>();
         LinearLayout linBackground = (LinearLayout) findViewById(R.id.background);
-
-        String str[][][][] = new String[3][3][3][3];
+        str = new String[3][3][3][3];
         str[0][0][0][2] = "4";
         str[0][0][1][0] = "2";
         str[0][0][2][0] = "3";
@@ -68,33 +66,56 @@ public class MainActivity extends AppCompatActivity {
 
 
         /* 스도쿠 보드판 만들기 */
-        for(String bigRow[][][] : str) {
+        /*for(String bigRow[][][] : str) {
+
+            for(String bigBlock[][] : bigRow) {
+
+                for(String smallRow[] : bigBlock) {
+
+                    for (String aStr : smallRow) {
+
+                    }
+
+                }
+
+            }
+
+        }*/
+        LinearLayout.LayoutParams linParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        for(int i = 0 ; i < MainActivity.str.length ; i++) {
+            String bigRow[][][] = MainActivity.str[i];
             LinearLayout linBigRow = new LinearLayout(this);
             linBigRow.setOrientation(LinearLayout.HORIZONTAL);
-            for(String bigBlock[][] : bigRow) {
-                LinearLayout linBigRows = new LinearLayout(this);
-                linBigRows.setOrientation(LinearLayout.VERTICAL);
-                for(String smallRow[] : bigBlock) {
+            linBigRow.setBackgroundResource(R.drawable.sudoku_boarder);
+            linBigRow.setLayoutParams(linParams);
+            for(int j = 0 ; j < bigRow.length ; j++) {
+                LinearLayout linBigCol = new LinearLayout(this);
+                linBigCol.setOrientation(LinearLayout.VERTICAL);
+                linBigCol.setBackgroundResource(R.drawable.sudoku_boarder);
+                linBigCol.setLayoutParams(linParams);
+                String mediumBlock[][] = bigRow[j];
+                for(int k = 0 ; k < mediumBlock.length ; k++) {
                     LinearLayout linOneRow = new LinearLayout(this);
                     linOneRow.setOrientation(LinearLayout.HORIZONTAL);
-                    for (String aStr : smallRow) {
+                    String mediumRow[] = mediumBlock[k];
+                    for(int l = 0 ; l < mediumRow.length ; l++) {
+                        String aStr = mediumRow[l];
                         TextBlock txtBlock;
+                        int arrInt[] = {i,j,k,l};
                         if (aStr != null) {
-                            txtBlock = new TextBlock(this, aStr);
+                            txtBlock = new TextBlock(this, aStr,arrInt);
                         } else {
-                            txtBlock = new TextBlock(this);
+                            txtBlock = new TextBlock(this,arrInt);
                         }
                         linOneRow.addView(txtBlock);
                         textBlockArrayList.add(txtBlock);
                     }
-                    linBigRows.addView(linOneRow);
+                    linBigCol.addView(linOneRow);
                 }
-                linBigRow.addView(linBigRows);
+
+                linBigRow.addView(linBigCol);
             }
             linBackground.addView(linBigRow);
         }
-
-
-
     }
 }
